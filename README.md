@@ -1,58 +1,297 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Controle de Chamados Internos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Desafio técnico desenvolvido para o processo seletivo da Codificar.
 
-## About Laravel
+## Sobre o Projeto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplicação web para gerenciamento de chamados internos desenvolvida com Laravel 13.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O sistema permite:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Cadastro de chamados
+* Distribuição automática de responsáveis
+* Atualização de status
+* Visualização detalhada
+* Edição de chamados
+* Exclusão de chamados
+* Paginação da listagem
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Tecnologias Utilizadas
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Backend
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+* PHP 8.3
+* Laravel 13
+* SQLite
+* Eloquent ORM
 
-## Agentic Development
+### Frontend
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+* Blade
+* Tailwind CSS
+* Vite
 
-```bash
-composer require laravel/boost --dev
+### Ferramentas
 
-php artisan boost:install
+* Composer
+* NPM
+* Git
+
+---
+
+## Estrutura do Projeto
+
+```text
+app
+├── Actions
+├── DTOs
+├── Enums
+├── Http
+│   ├── Controllers
+│   └── Requests
+├── Models
+├── Services
+└── ViewModels
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Modelagem
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Responsibles
 
-## Code of Conduct
+Responsáveis pelo atendimento dos chamados.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Campo      | Tipo      |
+| ---------- | --------- |
+| id         | bigint    |
+| name       | string    |
+| created_at | timestamp |
+| updated_at | timestamp |
 
-## Security Vulnerabilities
+### Tickets
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Chamados cadastrados no sistema.
 
-## License
+| Campo          | Tipo        |
+| -------------- | ----------- |
+| id             | bigint      |
+| title          | string      |
+| description    | text        |
+| priority       | string      |
+| status         | string      |
+| responsible_id | foreign key |
+| created_at     | timestamp   |
+| updated_at     | timestamp   |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Relacionamentos
+
+### Responsible
+
+```php
+Responsible hasMany Tickets
+```
+
+### Ticket
+
+```php
+Ticket belongsTo Responsible
+```
+
+---
+
+## Enums
+
+### TicketStatus
+
+```text
+open
+in_progress
+resolved
+closed
+```
+
+### TicketPriority
+
+```text
+low
+medium
+high
+```
+
+---
+
+## Funcionalidades Implementadas
+
+### Chamados
+
+* Criar chamado
+* Listar chamados
+* Visualizar chamado
+* Editar chamado
+* Excluir chamado
+
+### Responsáveis
+
+* Seed inicial automático
+* Associação automática ao criar chamado
+
+### Interface
+
+* Layout principal Blade
+* Formulário compartilhado
+* Paginação
+* Mensagens de sucesso
+
+---
+
+## Seed Inicial
+
+Ao executar os seeders, são criados automaticamente:
+
+```text
+João Silva
+Maria Souza
+Pedro Santos
+```
+
+---
+
+## Instalação
+
+### Clonar repositório
+
+```bash
+git clone <url-do-repositorio>
+cd codificar-helpdesk
+```
+
+### Instalar dependências
+
+```bash
+composer install
+npm install
+```
+
+### Configurar ambiente
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+### Banco SQLite
+
+Criar arquivo:
+
+```text
+database/database.sqlite
+```
+
+Configurar:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+### Executar migrations
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Compilar frontend
+
+```bash
+npm run build
+```
+
+Para desenvolvimento:
+
+```bash
+npm run dev
+```
+
+### Executar aplicação
+
+```bash
+php artisan serve
+```
+
+Acessar:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Rotas
+
+```text
+GET     /tickets
+GET     /tickets/create
+POST    /tickets
+GET     /tickets/{ticket}
+GET     /tickets/{ticket}/edit
+PUT     /tickets/{ticket}
+DELETE  /tickets/{ticket}
+```
+
+---
+
+## Estrutura de Views
+
+```text
+resources/views
+│
+├── layouts
+│   └── app.blade.php
+│
+└── tickets
+    ├── _form.blade.php
+    ├── create.blade.php
+    ├── edit.blade.php
+    ├── index.blade.php
+    └── show.blade.php
+```
+
+---
+
+## Próximas Melhorias
+
+* Refatoração para Services
+* Implementação de DTOs
+* Implementação de Actions
+* ViewModels
+* Distribuição inteligente de chamados
+* Testes automatizados
+* Dashboard de métricas
+
+---
+
+## Status do Projeto
+
+### Concluído
+
+* Estrutura inicial Laravel
+* Banco SQLite
+* Migrations
+* Seeders
+* Models
+* Enums
+* CRUD de chamados
+* Validações
+* Blade Templates
+* Tailwind CSS
+* Paginação
+
+### Em desenvolvimento
+
+* Arquitetura em camadas
+* Regras de negócio avançadas
+* Testes automatizados
