@@ -9,7 +9,7 @@ Aplicação web para gerenciamento de chamados internos desenvolvida com Laravel
 O sistema permite:
 
 * Cadastro de chamados
-* Atribuição automática de responsáveis (implementação inicial)
+* Atribuição automática baseada em carga de trabalho
 * Atualização de status
 * Visualização detalhada
 * Edição de chamados
@@ -136,6 +136,7 @@ high
 
 * Seed inicial de responsáveis
 * Atribuição automática de responsável ao criar chamado
+* Associação automática ao responsável com menos chamados em aberto
 
 ### Interface
 
@@ -363,11 +364,21 @@ A lógica de negócio foi separada em DTOs, Actions e Services para manter os Co
 
 Os campos de status e prioridade utilizam Enums nativos do PHP para evitar valores inválidos e melhorar a legibilidade do código.
 
+### Distribuição Automática
+
+Os chamados são atribuídos automaticamente ao responsável com a menor quantidade de chamados em aberto.
+
+São considerados chamados em aberto:
+
+- open
+- in_progress
+
+Chamados com status `resolved` e `closed` não entram no cálculo da distribuição.
+
 ---
 
 # Próximas Melhorias
 
-- Distribuição inteligente de chamados baseada em carga de trabalho
 - Seleção manual de responsável na criação e edição de chamados
 - Filtros por status, prioridade e responsável
 - Ordenação da listagem
@@ -397,10 +408,10 @@ Os campos de status e prioridade utilizam Enums nativos do PHP para evitar valor
 * Implementação de Services
 * Separação de responsabilidades por camadas
 * Atribuição automática de responsáveis
+* Distribuição inteligente de chamados
 
 ## 🚧 Em Desenvolvimento
 
-- Distribuição inteligente de chamados
 - Seleção manual de responsável
 - Filtros e busca na listagem
 - Testes automatizados
