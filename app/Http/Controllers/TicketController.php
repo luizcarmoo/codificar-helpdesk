@@ -7,6 +7,8 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Responsible;
 use App\Models\Ticket;
+use App\Actions\CreateTicketAction;
+use App\DTOs\CreateTicketDTO;
 
 class TicketController extends Controller
 {
@@ -24,22 +26,19 @@ class TicketController extends Controller
         return view('tickets.create');
     }
 
-    public function store(StoreTicketRequest $request)
-    {
-        $responsible = Responsible::inRandomOrder()->first();
+public function store(
+    StoreTicketRequest $request,
+    CreateTicketAction $action
+)
+{
+    $action->execute(
+        CreateTicketDTO::fromRequest($request)
+    );
 
-        Ticket::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'priority' => $request->priority,
-            'status' => TicketStatus::OPEN,
-            'responsible_id' => $responsible?->id,
-        ]);
-
-        return redirect()
-            ->route('tickets.index')
-            ->with('success', 'Chamado criado com sucesso.');
-    }
+    return redirect()
+        ->route('tickets.index')
+        ->with('success', 'Chamado criado com sucesso.');
+}
 
     public function show(Ticket $ticket)
     {

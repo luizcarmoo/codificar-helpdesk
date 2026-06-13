@@ -9,7 +9,7 @@ Aplicação web para gerenciamento de chamados internos desenvolvida com Laravel
 O sistema permite:
 
 * Cadastro de chamados
-* Distribuição automática de responsáveis
+* Atribuição automática de responsáveis (implementação inicial)
 * Atualização de status
 * Visualização detalhada
 * Edição de chamados
@@ -49,11 +49,8 @@ app
 ├── DTOs
 ├── Enums
 ├── Http
-│   ├── Controllers
-│   └── Requests
 ├── Models
-├── Services
-└── ViewModels
+└── Services
 ```
 
 ---
@@ -137,8 +134,8 @@ high
 
 ### Responsáveis
 
-* Seed inicial automático
-* Associação automática ao criar chamado
+* Seed inicial de responsáveis
+* Atribuição automática de responsável ao criar chamado
 
 ### Interface
 
@@ -244,54 +241,193 @@ DELETE  /tickets/{ticket}
 
 ---
 
-## Estrutura de Views
+# Arquitetura
+
+O projeto segue uma arquitetura em camadas, promovendo a separação de responsabilidades e facilitando a manutenção, escalabilidade e testabilidade da aplicação.
+
+## Camadas
+
+### Controllers
+
+Responsáveis por receber as requisições HTTP, delegar o processamento para as camadas apropriadas e retornar as respostas ao cliente.
+
+### Requests
+
+Responsáveis pela validação dos dados de entrada antes que sejam processados pela aplicação.
+
+### DTOs (Data Transfer Objects)
+
+Objetos utilizados para transportar dados entre as camadas da aplicação de forma estruturada e tipada.
+
+**Exemplo:**
+
+```php
+CreateTicketDTO
+```
+
+### Actions
+
+Responsáveis por orquestrar os casos de uso da aplicação, centralizando o fluxo de execução das operações.
+
+**Exemplo:**
+
+```php
+CreateTicketAction
+```
+
+### Services
+
+Responsáveis por encapsular regras de negócio reutilizáveis e operações específicas do domínio.
+
+**Exemplo:**
+
+```php
+AssignResponsibleService
+```
+
+### Models
+
+Representam as entidades da aplicação e realizam a interação com o banco de dados por meio do Eloquent ORM.
+
+---
+
+## Fluxo de Criação de Chamados
 
 ```text
-resources/views
-│
-├── layouts
-│   └── app.blade.php
-│
-└── tickets
-    ├── _form.blade.php
-    ├── create.blade.php
-    ├── edit.blade.php
-    ├── index.blade.php
-    └── show.blade.php
+HTTP Request
+      │
+      ▼
+StoreTicketRequest
+      │
+      ▼
+CreateTicketDTO
+      │
+      ▼
+CreateTicketAction
+      │
+      ▼
+AssignResponsibleService
+      │
+      ▼
+Ticket Model
+      │
+      ▼
+Database
 ```
 
 ---
 
-## Próximas Melhorias
+## Estrutura Atual
 
-* Refatoração para Services
-* Implementação de DTOs
-* Implementação de Actions
-* ViewModels
-* Distribuição inteligente de chamados
-* Testes automatizados
-* Dashboard de métricas
+```text
+app
+├── Actions
+│   └── CreateTicketAction.php
+│
+├── DTOs
+│   └── CreateTicketDTO.php
+│
+├── Enums
+│   ├── TicketPriority.php
+│   └── TicketStatus.php
+│
+├── Http
+│   ├── Controllers
+│   │   └── TicketController.php
+│   │
+│   └── Requests
+│       ├── StoreTicketRequest.php
+│       └── UpdateTicketRequest.php
+│
+├── Models
+│   ├── Responsible.php
+│   └── Ticket.php
+│
+└── Services
+    └── AssignResponsibleService.php
+```
 
 ---
 
-## Status do Projeto
+## Decisões Técnicas
 
-### Concluído
+### Banco de Dados
 
-* Estrutura inicial Laravel
-* Banco SQLite
+Foi utilizado SQLite por ser uma solução leve e simples de configurar para o desafio técnico.
+
+### Arquitetura
+
+A lógica de negócio foi separada em DTOs, Actions e Services para manter os Controllers enxutos e facilitar testes futuros.
+
+### Enums
+
+Os campos de status e prioridade utilizam Enums nativos do PHP para evitar valores inválidos e melhorar a legibilidade do código.
+
+---
+
+# Próximas Melhorias
+
+- Distribuição inteligente de chamados baseada em carga de trabalho
+- Seleção manual de responsável na criação e edição de chamados
+- Filtros por status, prioridade e responsável
+- Ordenação da listagem
+- Busca por título do chamado
+- Testes unitários
+- Testes de integração
+
+---
+
+# Status do Projeto
+
+## ✅ Concluído
+
+* Estrutura inicial com Laravel 13
+* Configuração do banco de dados SQLite
 * Migrations
 * Seeders
-* Models
-* Enums
-* CRUD de chamados
-* Validações
-* Blade Templates
-* Tailwind CSS
-* Paginação
+* Models e relacionamentos
+* Enums para status e prioridade
+* CRUD completo de chamados
+* Form Requests para validação
+* Interface com Blade Templates
+* Estilização com Tailwind CSS
+* Paginação de registros
+* Implementação de DTOs
+* Implementação de Actions
+* Implementação de Services
+* Separação de responsabilidades por camadas
+* Atribuição automática de responsáveis
 
-### Em desenvolvimento
+## 🚧 Em Desenvolvimento
 
-* Arquitetura em camadas
-* Regras de negócio avançadas
-* Testes automatizados
+- Distribuição inteligente de chamados
+- Seleção manual de responsável
+- Filtros e busca na listagem
+- Testes automatizados
+
+```
+```
+
+---
+
+## Requisitos Atendidos ✅
+
+### Funcionais
+
+- Cadastro de chamados
+- Edição de chamados
+- Exclusão de chamados
+- Atualização de status
+- Associação de responsável
+- Listagem de chamados
+
+### Técnicos
+
+- Laravel 13
+- PHP 8.3
+- SQLite
+- Blade Templates
+- Tailwind CSS
+- Arquitetura em camadas
+- Validação com Form Requests
+- Enums PHP
