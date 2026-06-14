@@ -11,12 +11,14 @@ class StoreTicketRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'title' => ['required', 'max:255'],
-            'description' => ['required'],
-            'priority' => ['required'],
-        ];
-    }
+public function rules(): array
+{
+    return [
+        'title' => ['required', 'string'],
+        'description' => ['required', 'string'],
+        'priority' => ['required', 'string'],
+
+        'responsible_id' => ['nullable', 'exists:responsibles,id'],
+    ];
+}
 }

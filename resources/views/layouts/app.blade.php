@@ -15,6 +15,16 @@
         Sistema de Chamados
     </h1>
 
+    @if (!request()->routeIs('tickets.index'))
+
+    <a
+        href="{{ route('tickets.index') }}"
+        class="inline-block mb-4 text-blue-600 hover:underline">
+        ← Voltar
+    </a>
+
+@endif
+
     @if(session('success'))
         <div class="bg-green-200 p-4 rounded mb-4">
             {{ session('success') }}

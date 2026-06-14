@@ -23,13 +23,15 @@ class TicketController extends Controller
 
     public function create()
     {
-        return view('tickets.create');
+        return view('tickets.create', [
+            'responsibles' => Responsible::all()
+        ]);
     }
 
-public function store(
-    StoreTicketRequest $request,
-    CreateTicketAction $action
-)
+    public function store(
+        StoreTicketRequest $request,
+        CreateTicketAction $action
+    )
 {
     $action->execute(
         CreateTicketDTO::fromRequest($request)
@@ -47,7 +49,10 @@ public function store(
 
     public function edit(Ticket $ticket)
     {
-        return view('tickets.edit', compact('ticket'));
+        return view('tickets.edit', [
+            'ticket' => $ticket,
+            'responsibles' => Responsible::all()
+        ]);
     }
 
     public function update(

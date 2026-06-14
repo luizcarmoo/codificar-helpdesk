@@ -11,13 +11,18 @@ class UpdateTicketRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+        public function rules(): array
     {
         return [
             'title' => ['required', 'max:255'],
             'description' => ['required'],
             'priority' => ['required'],
             'status' => ['required'],
+
+            'responsible_id' => [
+                'nullable',
+                'exists:responsibles,id'
+            ],
         ];
     }
 }

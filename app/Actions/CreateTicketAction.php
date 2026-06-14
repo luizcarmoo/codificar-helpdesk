@@ -10,22 +10,27 @@ use App\Services\AssignResponsibleService;
 class CreateTicketAction
 {
     public function __construct(
-        private readonly AssignResponsibleService $assignResponsibleService
-    ) {
-    }
+        private AssignResponsibleService $assignResponsibleService
+    ) {}
 
-    public function execute(
-        CreateTicketDTO $dto
-    ): Ticket {
+    public function execute(CreateTicketDTO $dto): Ticket
+    {
+        $responsibleId = $dto->responsibleId;
 
-        $responsible = $this->assignResponsibleService->execute();
+        // dd($dto);
+
+        // Se não veio responsável, usa regra automática
+        if (!$responsibleId) {
+            $responsible = $this->assignResponsibleService->execute();
+            $responsibleId = $responsible?->id;
+        }
 
         return Ticket::create([
             'title' => $dto->title,
             'description' => $dto->description,
             'priority' => $dto->priority,
-            'status' => TicketStatus::OPEN,
-            'responsible_id' => $responsible?->id,
+            'status' => 'open',
+            'responsible_id' => $responsibleId,
         ]);
     }
 }
