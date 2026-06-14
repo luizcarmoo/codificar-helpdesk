@@ -11,12 +11,14 @@ use App\Actions\CreateTicketAction;
 use App\DTOs\CreateTicketDTO;
 use Illuminate\Http\Request;
 use App\Filters\TicketFilter;
+use App\Services\TicketMetricsService;
 
 class TicketController extends Controller
 {
     public function index(
         Request $request,
-        TicketFilter $filter
+        TicketFilter $filter,
+        TicketMetricsService $ticketMetricsService
     )
     {
         $query = Ticket::with('responsible');
@@ -35,9 +37,12 @@ class TicketController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+            $metrics = $ticketMetricsService->execute();
+
         return view('tickets.index', [
             'tickets' => $tickets,
             'responsibles' => Responsible::all(),
+            'metrics' => $metrics,
         ]);
     }
 

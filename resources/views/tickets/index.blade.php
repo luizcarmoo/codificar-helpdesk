@@ -18,6 +18,38 @@
 
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-white p-4 rounded shadow">
+        <div class="text-gray-500 text-sm">Total</div>
+        <div class="text-3xl font-bold">
+            {{ $metrics['total'] }}
+        </div>
+    </div>
+
+    <div class="bg-green-50 p-4 rounded shadow">
+        <div class="text-green-700 text-sm">Abertos</div>
+        <div class="text-3xl font-bold text-green-700">
+            {{ $metrics['open'] }}
+        </div>
+    </div>
+
+    <div class="bg-yellow-50 p-4 rounded shadow">
+        <div class="text-yellow-700 text-sm">Em andamento</div>
+        <div class="text-3xl font-bold text-yellow-700">
+            {{ $metrics['in_progress'] }}
+        </div>
+    </div>
+
+    <div class="bg-blue-50 p-4 rounded shadow">
+        <div class="text-blue-700 text-sm">Resolvidos</div>
+        <div class="text-3xl font-bold text-blue-700">
+            {{ $metrics['resolved'] }}
+        </div>
+    </div>
+
+</div>
+
 <form
     method="GET"
     action="{{ route('tickets.index') }}"
@@ -155,9 +187,13 @@
 
                         <td class="p-3">{{ $ticket->title }}</td>
 
-                        <td class="p-3">{{ $ticket->priority->value }}</td>
+                        <td class="p-3"><x-badge
+                                            type="priority"
+                                            :value="$ticket->priority->value" /></td>
 
-                        <td class="p-3">{{ $ticket->status->value }}</td>
+                        <td class="p-3"><x-badge
+                                            type="status"
+                                            :value="$ticket->status->value" /></td>
 
                         <td class="p-3">
                             {{ $ticket->responsible?->name ?? 'Não atribuído' }}
