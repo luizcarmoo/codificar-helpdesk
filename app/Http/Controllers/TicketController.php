@@ -9,16 +9,36 @@ use App\Models\Responsible;
 use App\Models\Ticket;
 use App\Actions\CreateTicketAction;
 use App\DTOs\CreateTicketDTO;
+use Illuminate\Http\Request;
+use App\Filters\TicketFilter;
 
 class TicketController extends Controller
 {
-    public function index()
+    public function index(
+        Request $request,
+        TicketFilter $filter
+    )
     {
-        $tickets = Ticket::with('responsible')
-            ->latest()
-            ->paginate(10);
+        $query = Ticket::with('responsible');
 
-        return view('tickets.index', compact('tickets'));
+        $filter->apply(
+            $query,
+            $request->only([
+                'status',
+                'priority',
+                'responsible_id',
+            ])
+        );
+
+        $tickets = $query
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('tickets.index', [
+            'tickets' => $tickets,
+            'responsibles' => Responsible::all(),
+        ]);
     }
 
     public function create()
